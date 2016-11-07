@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>网络棋牌室</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <!--<link rel="stylesheet" type="text/css" href="http://localhost/arcgis_js_api/library/3.6/3.6/js/dojo/dijit/themes/claro/claro.css"/>-->
-    <link rel="stylesheet" type="text/css" href="./css/master.css">
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="./js/config.js"></script>
-    <script type="text/javascript" src="./js/Parser.js"></script>
-    <script type="text/javascript" src="./js/Render.js"></script>
-    <script type="text/javascript" src="./js/Socket.js"></script>
-    <script type="text/javascript" src="./js/ChessGame.js"></script>
 
+<head>
+    <title>暗棋游戏</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <meta name="description" content="">
+    <meta name="keywords" content="木的树">
+    <base href="@@baseUrl">
+    <link rel="stylesheet" type="text/css" href="css/master.css?v=@@version">
+</head>
+
+<body onload="start();">
+    <div class="container">
+        <div class="thr">
+            <div class="content">
+                <div class="mainBoxCenter">
+                    <canvas id="chessBoard" width="500" height="550"></canvas>
+                </div>
+            </div>
+            <div class="left">&nbsp</div>
+            <div class="right">&nbsp</div>
+        </div>
+    </div>
+    <!-- end TabContainer -->
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="js/main.js?v=@@version"></script>
     <script type="text/javascript">
         function start() {
             var chessImgs = {
@@ -51,30 +67,17 @@
             right.style.width = rw + 'px';
         }
 
-        window.onbeforeunload = function(evt){
+        window.onbeforeunload = function(evt) {
             Socket.close(userName, rivalName);
 
             // 延迟三秒，以便socket传送数据
             var start = Date.now();
             var end = Date.now();
-            while(end - start < 3000){
+            while (end - start < 3000) {
                 end = Date.now();
             }
         }
     </script>
-</head>
-<body onload="start();">
-<div class="container">
-    <div class="thr">
-        <div class="content">
-            <div class="mainBoxCenter">
-                <canvas id="chessBoard" width="500" height="550" ></canvas>
-            </div>
-        </div>
-        <div class="left">&nbsp</div>
-        <div class="right">&nbsp</div>
-    </div>
-</div>
-<!-- end TabContainer -->
 </body>
+
 </html>

@@ -1,0 +1,76 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.thr div.content {
+    display: inline-block;
+}
+
+.thr div.left {
+    float: left;
+}
+
+.thr div.right {
+    float: right;
+}
+
+.mainBoxCenter {
+    overflow: hidden;
+    display: inline-block;
+    position: relative;
+}
+
+.mainBoxCenter:hover p {
+    top: 0;
+}
+
+#chessBoard {
+    display: inline-block;
+    border: 2px solid black;
+    overflow: hidden;
+}
+
+.mainBoxCenter p {
+    display: block;
+    width: 504px;
+    height: 554px;
+    position: absolute;
+    left: 0;
+    top: 554px;
+    z-index: 100;
+    background: rgb(233, 228, 228);
+    opacity: 0.4;
+    font-size: 12px;
+    color: #DBCFCF;
+    padding: 0;
+    margin: 0;
+    line-height: 16px;
+    -webkit-transition: all 0.6s ease-in-out;
+    -moz-transition: all 0.6s ease-in-out;
+    -o-transition: all 0.6s ease-in-out;
+    transition: all 0.6s ease-in-out;
+}
+
+.mainBoxCenter p b {
+    display: block;
+    font-size: 22px;
+    color: blue;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    line-height: 30px;
+}
+
+.mainBoxCenter p span {
+    display: block;
+    padding: 10px;
+    line-height: 400px;
+    text-align: center;
+    vertical-align: middle;
+    color: red;
+    font-size: 50px;
+}

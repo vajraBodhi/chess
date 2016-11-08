@@ -1,39 +1,38 @@
-/**
- * Created with JetBrains WebStorm.
- * User: Administrator
- * Date: 13-12-12
- * Time: 下午11:51
- * To change this template use File | Settings | File Templates.
- */
-var wsParser = {
-    app: null,
+import { GLOBAL } from './global';
+import { Render } from './render';
 
-    click: function(r, c, btn, cliCamp){
-        var row = parseInt(r, 10),
-            col = parseInt(c, 10),
-            isSelect = parseInt(btn, 10) == 0 ? true : false;
-        clickCamp = cliCamp;
-            Render.drawChess(
-                canvas.getContext('2d'), row, col, btn, isSelect
-            );
+export const Parser = {
+    click(r, c, btn, cliCamp) {
+        let row = Number.parseInt(r, 10),
+            col = Number.parseInt(c, 10),
+            isSelect = Number.parseInt(btn, 10) === 0;
 
-        var status = this.app.checkVod();
-        this.app.showBulletin(status);
-    },
+        GLOBAL.clickCamp = cliCamp;
+        Render.drawChess(GLOBAL.canvas.getContext('2d'), row, col, btn, isSelect);
 
-    setCamp: function(c){
-        camp = c;
-        turn = false;
-    },
-
-    shuffle: function(data){
-        chessSet = data.set;
-        var part = data.ptc.split(',');
-        if (userName == part[0]) {
-            rivalName = part[1];
-        }else {
-            rivalName = part[0];
+        if (GLOBAL.app) {
+            let status = GLOBAL.app.checkVod();
+            GLOBAL.app.showBulletin(status);
         }
-        this.app.drawing();
+    },
+
+    setCamp(c) {
+        GLOBAL.camp = c;
+        GLOBAL.turn = false;
+    },
+
+    shuffle(data) {
+        GLOBAL.chessSet = data.set;
+        let part = data.ptc.split(',');
+
+        if (GLOBAL.userName === part[0]) {
+            GLOBAL.rivalName = part[1];
+        } else {
+            GLOBAL.rivalName = part[0];
+        }
+
+        if (GLOBAL.app) {
+            GLOBAL.app.drawing();
+        }
     }
 };

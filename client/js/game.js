@@ -1,12 +1,12 @@
 "use strict";
-import { loadedImgs, chessSet, canvas, gap } from './config';
-import { Render } from './Render';
+import { GLOBAL } from './global';
+import { Render } from './render';
 
 
 let instance = null;
 let chaseCount = 0;
 
-export class Game {
+class Game {
     increaseCount() {
         chaseCount++;
     }
@@ -20,13 +20,13 @@ export class Game {
         let imgs = 0;
 
         for (let p in chessImgs) {
-            loadedImgs[p] = new Image();
-            loadedImgs[p].src = chessImgs[p];
+            GLOBAL.loadedImgs[p] = new Image();
+            GLOBAL.loadedImgs[p].src = chessImgs[p];
 
-            if (loadedImgs[p].complete) {
+            if (GLOBAL.loadedImgs[p].complete) {
                 onload_img++;
             } else {
-                loadedImgs[p].onload = () => {
+                GLOBAL.loadedImgs[p].onload = () => {
                     onload_img++;
                 }
             }
@@ -40,8 +40,8 @@ export class Game {
 
     getCampCount(camp) {
         let count = 0;
-        for (let p in chessSet) {
-            let chess = chessSet[p];
+        for (let p in GLOBAL.chessSet) {
+            let chess = GLOBAL.chessSet[p];
             if (camp === chess && chess.type) {
                 count++;
             }
@@ -69,33 +69,33 @@ export class Game {
     }
 
     drawing() {
-        if (canvas.getContext) {
-            let context = canvas.getContext('2d');
-            Render.drawChessBoard(canvas, context); // 棋盘
+        if (GLOBAL.canvas.getContext) {
+            let context = GLOBAL.canvas.getContext('2d');
+            Render.drawChessBoard(GLOBAL.canvas, context); // 棋盘
             Render.drawAllChess(context); // 32个棋子
 
-            canvas.addEventListener('mousedown', this.clickChess.bind(this), false);
-            canvas.oncontextmenu = () => {
+            GLOBAL.canvas.addEventListener('mousedown', this.clickChess.bind(this), false);
+            GLOBAL.canvas.oncontextmenu = () => {
                 return false;
             }
         }
     }
 
     clickChess(evt) {
-        if (window.turn) {
+        if (GLOBAL.turn) {
             evt = evt || window.event;
             evt.preventDefault();
             let x = evt.offsetX || evt.layerX;
             let y = evt.offsetY || evt.layerY;
 
             //只使用下半盘
-            if (x > gap && y > 6 * gap) {
-                let row = Number.parseInt((evt.target.height - y) / gap, 10);
-                let col = Number.parseInt(x / gap, 10);
+            if (x > GLOBAL.gap && y > 6 * GLOBAL.gap) {
+                let row = Number.parseInt((evt.target.height - y) / GLOBAL.gap, 10);
+                let col = Number.parseInt(x / GLOBAL.gap, 10);
 
                 console.log(`${row} , ${col}`);
-                let context = canvas.getContext('2d');
-                window.clickCamp = camp;
+                let context = GLOBAL.canvas.getContext('2d');
+                GLOBAL.clickCamp = camp;
                 Render.drawChess(context, row, col, evt.button, evt.button == 0 ? true : false);
             }
         }
@@ -118,6 +118,17 @@ export class Game {
         bulletin.innerHTML = "<b>比赛结束</b><span>" + content + "</span>";
         let mainBox = document.getElementsByClassName('mainBoxCenter')[0];
         mainBox.appendChild(bulletin);
-        window.turn = false; // 比赛停止
+        GLOBAL.turn = false; // 比赛停止
     }
 }
+
+export const GAME = {
+    getInstance() {
+        if (instance) {
+            return instance;
+        } else {
+            instance = new Game();
+            return instance;
+        }
+    }
+};

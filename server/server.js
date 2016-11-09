@@ -135,6 +135,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('click', function(data) {
         console.log('click: ' + users);
+        console.log(data);
         var soc = conns[data.tid];
         if (soc) {
             soc.emit('click', data);

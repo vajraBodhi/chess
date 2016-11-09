@@ -43,7 +43,7 @@ export const Socket = {
             clickCamp: GLOBAL.camp
         };
 
-        wSocket.emit('click', GLOBAL.camp);
+        wSocket.emit('click', msg);
     },
 
     camp(uName, camp) {

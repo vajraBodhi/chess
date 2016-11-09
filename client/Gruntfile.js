@@ -156,9 +156,31 @@ module.exports = function(grunt) {
         connect: {
             server: {
                 options: {
-
+                    port: cfg.port,
+                    hostname: cfg.hostname,
+                    protocol: cfg.protocol,
+                    base: {
+                        path: 'dist',
+                        options: {
+                            index: 'index.html',
+                            maxAge: 1000 * 60 * 5
+                        }
+                    },
+                    open: true,
+                    livereload: true
                 }
             }
         }
     });
+
+    grunt.registerTask('dev', '开发环境构建。。。', function() {
+        grunt.task.run([
+            'clean', 'babel',
+            'uglify',
+            'sass', 'imagemin', 'cssmin',
+            'copy',
+            'replace',
+            'watch', 'connect'
+        ]);
+    })
 };

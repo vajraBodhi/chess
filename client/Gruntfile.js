@@ -7,10 +7,11 @@ module.exports = function(grunt) {
         hostname: 'localhost',
         port: '9001',
         version: Date.now(),
-        defaultUrl: `${this.protocol}://${this.hostname}:${this.port}`,
-        releaseUrl: `${this.protocol}://${this.hostname}:${this.port}`, //可修改为发布服务器地址
         socketServer: 'http://localhost:8080'
     };
+
+    cfg.defaultUrl = `${cfg.protocol}://${cfg.hostname}:${cfg.port}`;
+    cfg.releaseUrl = `${cfg.protocol}://${cfg.hostname}:${cfg.port}`; //可修改为发布服务器地址
 
     // files: [{
     //     expand: true,                  // Enable dynamic expansion 
@@ -40,40 +41,56 @@ module.exports = function(grunt) {
         },
         clean: {
             dist: ['./dist'],
-            js: ['<%=config.dest.js %>**']
+            js: ['<%=config.dest.js %>**',
+                '<%=config.tmp.js%>/**/*.js',
+                '<%=config.tmp.js%>/**/*.map'
+            ]
         },
         babel: {
             options: {
                 sourceMap: true,
-                presets: ['babel-preset-es2015']
+                presets: ['babel-preset-es2015'],
+                plugins: ['transform-es2015-modules-umd']
             },
-            files: [{
-                expand: true,
-                cwd: '<%=config.src.js %>',
-                src: ['**/*.js'],
-                dest: '<%=config.tmp.js%>'
-            }]
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%=config.src.js %>',
+                    src: ['**/*.js'],
+                    dest: '<%=config.tmp.js%>'
+                }]
+            }
         },
         uglify: {
             options: {
-                banner: '暗棋游戏'
+                banner: '/*暗棋游戏*/',
+                sourceMap: true,
+                sourceMapIncludeSources: true
             },
             files: {
-                src: '<%=config.tmp.js%>/*.js',
-                dest: '<%=config.dest.js%>/main.js'
+                src: ['<%=config.tmp.js%>/global.js',
+                    '<%=config.tmp.js%>/render.js',
+                    '<%=config.tmp.js%>/parser.js',
+                    '<%=config.tmp.js%>/game.js',
+                    '<%=config.tmp.js%>/socket.js',
+                    '<%=config.tmp.js%>/main.js'
+                ],
+                dest: '<%=config.dest.js%>/main.min.js'
             }
         },
         sass: {
             options: {
                 style: 'expanded'
             },
-            files: [{
-                expand: true,
-                cwd: '<%=config.src.css %>',
-                src: '**/*.scss',
-                ext: '.css',
-                dest: '<%=config.dest.css%>'
-            }]
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%=config.src.css %>',
+                    src: '**/*.scss',
+                    ext: '.css',
+                    dest: '<%=config.dest.css%>'
+                }]
+            }
         },
         imagemin: {
             dist: {
@@ -134,7 +151,10 @@ module.exports = function(grunt) {
         },
         watch: {
             options: {
-                liveload: true
+                livereload: true
+            },
+            gf: {
+                files: './Gruntfile'
             },
             image: {
                 files: '<%=config.src.img %>**/*.{' + imgExts + '}',
@@ -179,8 +199,15 @@ module.exports = function(grunt) {
             'uglify',
             'sass', 'imagemin', 'cssmin',
             'copy',
-            'replace',
-            'watch', 'connect'
+            'replace' //,
+            // 'watch', 'connect'
         ]);
-    })
+    });
+
+    grunt.registerTask('server', '启动服务。。。', function() {
+        grunt.task.run([
+            'connect',
+            'watch'
+        ]);
+    });
 };

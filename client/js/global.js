@@ -13,6 +13,7 @@ export const GLOBAL = {
     camp: '', // a 红, b 绿
     clickCamp: '', // 当前执行方
     socket: null,
-    app: null
+    app: null,
+    socketServer: 'http://localhost:8080'
         //var chaseCount = 0; // 如果双方各剩一子，没有办法吃掉对方，相互追逐次数超过5次系统判定为和棋
 };

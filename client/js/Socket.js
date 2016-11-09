@@ -6,10 +6,8 @@ let wSocket = null;
 
 export const Socket = {
     init() {
-        if (wSocket) {
-            return wSocket;
-        } else {
-            wSocket = io.connect(); // Socket.io的全局变量
+        if (!wSocket) {
+            wSocket = io(GLOBAL.socketServer); // Socket.io的全局变量
             wSocket.on('join', (data) => {
                 console.log('socket已连接上');
                 GLOBAL.userName = data.cid;
@@ -45,7 +43,7 @@ export const Socket = {
             clickCamp: GLOBAL.camp
         };
 
-        wSocket.emit('click', camp);
+        wSocket.emit('click', GLOBAL.camp);
     },
 
     camp(uName, camp) {

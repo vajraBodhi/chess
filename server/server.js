@@ -10,59 +10,58 @@ var socket = require('socket.io');
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+console.log(process.env.PORT);
+app.set('port', process.env.PORT || 8080);
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
+// app.use(express.favicon());
+// app.use(express.logger('dev'));
+// app.use(express.json());
+// app.use(express.urlencoded());
+// app.use(express.methodOverride());
+// app.use(app.router);
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
-if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
-}
+// if ('development' == app.get('env')) {
+//     app.use(express.errorHandler());
+// }
 
-app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/public/index.html');
-});
+// app.get('/', function(req, res) {
+//     res.sendfile(__dirname + '/public/index.html');
+// });
 
 var server = http.createServer(app);
-var io = socket.listen(server).set('log level', 1);
+var io = socket.listen(server);
 io.set('transports', [
-    'flashsocket'
-    , 'htmlfile'
-    , 'xhr-polling'
-    , 'jsonp-polling'
+    'polling',
+    'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling'
 ]);
 
-server.listen(app.get('port'), function () {
+server.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'));
 });
 
 var conns = {};
 var users = [];
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function(socket) {
     var cid = socket.id;
     console.log('connection');
     conns[cid] = socket;
     for (var ccid in conns) {
         if (cid == ccid) {
             var soc = conns[ccid];
-            if (soc){
-                soc.emit('join', {cid: socket.id});
+            if (soc) {
+                soc.emit('join', { cid: socket.id });
             }
         }
     }
 
-    socket.on('take', function (data) {
+    socket.on('take', function(data) {
         users.push(data.uid);
         var count = users.length;
         if (count % 2 == 0) {
-            var ptc = users[count - 2].toString() +','+ users[count - 1].toString();
+            var ptc = users[count - 2].toString() + ',' + users[count - 1].toString();
             console.log('users: ' + users);
             // 32 chesses
             var chesses = [
@@ -99,14 +98,14 @@ io.sockets.on('connection', function (socket) {
     });
 
 
-    socket.on('close', function (data) {
-        console.log('clost: ', users);
+    socket.on('close', function(data) {
+        console.log('close: ', users);
         delete conns[data.fid];
 
         if (users.length >= 1) {
             var soc = conns[data.tid];
             if (soc) {
-                soc.emit('close', {fid: data.fid});
+                soc.emit('close', { fid: data.fid });
             }
             // 有一方强行退出则竞争对手也退出
         }
@@ -119,9 +118,9 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
-    socket.on('camp', function (data) {
+    socket.on('camp', function(data) {
         var soc = conns[data.tid];
-        console.log('users: ' + users);
+        console.log('camp: ' + users);
         if (soc) {
             console.log(data.fid);
             var oCamp = '';
@@ -130,12 +129,12 @@ io.sockets.on('connection', function (socket) {
             } else {
                 oCamp = 'a';
             }
-            soc.emit('camp', {camp: oCamp});
+            soc.emit('camp', { camp: oCamp });
         }
     });
 
-    socket.on('click', function (data) {
-        console.log('users: ' + users);
+    socket.on('click', function(data) {
+        console.log('click: ' + users);
         var soc = conns[data.tid];
         if (soc) {
             soc.emit('click', data);

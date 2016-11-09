@@ -28,11 +28,12 @@ let chessImgs = {
     'bg_over': './images/bg_over.gif'
 };
 
-GLOBAL.canvas = document.getElementById('chessCanvas');
+GLOBAL.canvas = document.getElementById('chessBoard');
 GLOBAL.app = GAME.getInstance();
 Render.drawChessBoard(GLOBAL.canvas);
-GLOBAL.app.preloadingImg(chessImgs);
-GLOBAL.socket = Socket.init();
+GLOBAL.app.preloadImg(chessImgs);
+Socket.init();
+GLOBAL.socket = Socket;
 
 var w = (screen.width - 506) / 2;
 var left = document.getElementsByClassName('left')[0];
@@ -44,7 +45,7 @@ right.style.width = rw + 'px';
 
 
 window.onbeforeunload = function(evt) {
-        GLOBAL.socket.close(userName, rivalName);
+        GLOBAL.socket.close(GLOBAL.userName, GLOBAL.rivalName);
 
         // 延迟三秒，以便socket传送数据
         var start = Date.now();

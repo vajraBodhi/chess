@@ -95,7 +95,7 @@ class Game {
 
                 console.log(`${row} , ${col}`);
                 let context = GLOBAL.canvas.getContext('2d');
-                GLOBAL.clickCamp = camp;
+                GLOBAL.clickCamp = GLOBAL.camp;
                 Render.drawChess(context, row, col, evt.button, evt.button == 0 ? true : false);
             }
         }

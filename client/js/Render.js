@@ -7,6 +7,8 @@ export const Render = {
             for (let j = 1; j <= 8; j++) {
                 let cy = (i * gap + gap * 5 + (i + 1) * gap + gap * 5) / 2;
                 let cx = (j * gap + (j + 1) * gap) / 2;
+
+
                 this.drawChess(context, i, j);
             }
         }
@@ -38,7 +40,7 @@ export const Render = {
     },
 
     select(context, lx, ty, chess, row, col, btn) {
-        let myTurn = GLOBAL.turn && (chess.type == camp); // 我方行子时只能选择自己阵营
+        let myTurn = GLOBAL.turn && (chess.type == GLOBAL.camp); // 我方行子时只能选择自己阵营
         let opTurn = !GLOBAL.turn && (chess.type != GLOBAL.camp); // 对手行子时只能选择对方阵营
         if (myTurn || opTurn) {
             let selectImage = GLOBAL.loadedImgs['bg_sel'];

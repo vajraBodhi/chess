@@ -38,11 +38,11 @@ class Game {
         // })
     }
 
-    getCampCount(camp) {
+    getCampCount(currentCamp) {
         let count = 0;
         for (let p in GLOBAL.chessSet) {
             let chess = GLOBAL.chessSet[p];
-            if (camp === chess && chess.type) {
+            if (chess && chess.type && chess.type === currentCamp) {
                 count++;
             }
         }
@@ -57,14 +57,18 @@ class Game {
             this.increaseCount();
         }
 
+        console.log(`checkVod, redCount:${redCount}, greenCount:${greenCount}, ChaseCount: ${this.ChaseCount}`);
+
         if (redCount === 0 && greenCount === 0) {
             return 0;
         } else if (greenCount === 0) {
             return 1;
         } else if (redCount === 0) {
             return -1;
-        } else if (this.getCampCount() >= 10) {
+        } else if (this.ChaseCount >= 10) {
             return 0;
+        } else {
+            return 'nothing';
         }
     }
 
@@ -114,7 +118,7 @@ class Game {
             return;
         }
 
-        let bulletin = document.getElementById('p');
+        let bulletin = document.createElement('p');
         bulletin.innerHTML = "<b>比赛结束</b><span>" + content + "</span>";
         let mainBox = document.getElementsByClassName('mainBoxCenter')[0];
         mainBox.appendChild(bulletin);

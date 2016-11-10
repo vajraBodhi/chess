@@ -64,8 +64,8 @@ module.exports = function(grunt) {
         uglify: {
             options: {
                 banner: '/*暗棋游戏*/',
-                sourceMap: true,
-                sourceMapIncludeSources: true
+                // sourceMap: true,
+                // sourceMapIncludeSources: true
             },
             files: {
                 src: ['<%=config.tmp.js%>/global.js',
@@ -151,7 +151,7 @@ module.exports = function(grunt) {
         },
         watch: {
             options: {
-                livereload: true
+                livereload: false
             },
             gf: {
                 files: './Gruntfile'
@@ -186,7 +186,7 @@ module.exports = function(grunt) {
                             maxAge: 1000 * 60 * 5
                         }
                     },
-                    open: true,
+                    open: false,
                     livereload: true
                 }
             }

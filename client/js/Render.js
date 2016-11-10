@@ -60,7 +60,7 @@ export const Render = {
         let lastRow = parseInt(GLOBAL.selectedRC.split('_')[0], 10);
         let lastCol = parseInt(GLOBAL.selectedRC.split('_')[1], 10);
         let x = GLOBAL.gap * lastCol + GLOBAL.gap / 2;
-        let y = canvas.width - GLOBAL.gap * lastRow + GLOBAL.gap / 2;
+        let y = GLOBAL.canvas.width - GLOBAL.gap * lastRow + GLOBAL.gap / 2;
         // 左上角
         let lastLx = x - GLOBAL.gap / 2;
         let lastTy = y - GLOBAL.gap / 2;
@@ -175,13 +175,13 @@ export const Render = {
         // 更新
         GLOBAL.chessSet[GLOBAL.selectedRC] = null;
         GLOBAL.chessSet[row + '_' + col] = lastChess;
-        movedRC = row + '_' + col;
+        GLOBAL.movedRC = row + '_' + col;
         GLOBAL.turn = !GLOBAL.turn;
         if (GLOBAL.camp == GLOBAL.clickCamp) {
             let status = GLOBAL.app.checkVod();
             GLOBAL.app.showBulletin(status);
 
-            GLOBAL.socket.click(userName, row, col, btn); // 传递消息
+            GLOBAL.socket.click(GLOBAL.userName, row, col, btn); // 传递消息
         }
     },
 

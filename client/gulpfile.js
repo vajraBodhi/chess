@@ -3,6 +3,8 @@ const del = require('del');
 const babel = require('gulp-babel');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
+// const useref = require('gulp-useref');
+const concat = require('gulp-concat');
 const sass = require('gulp-sass');
 const cssmin = require('gulp-minify-css');
 const imagemin = require('gulp-imagemin');
@@ -24,7 +26,7 @@ const config = {
         img: 'dist/images/',
         css: 'dist/css/',
         js: 'dist/js/',
-        html: 'dist'
+        html: 'dist/'
     }
 };
 
@@ -42,7 +44,7 @@ cfg.releaseUrl = `${cfg.protocol}://${cfg.hostname}:${cfg.port}`; //可修改为
 
 
 gulp.task('clean', function() {
-    del('dist');
+    del(['dist', 'tmp']);
 });
 
 gulp.task('babel', function() {
@@ -72,11 +74,40 @@ gulp.task('uglify', function() {
         .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(`${config.dest.js}main.min.js`))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
+        .pipe(gulp.dest(`${config.dest.js}`));
+        // .pipe(browserSync.reload({
+        //     stream: true
+        // }));
 });
+
+// gulp.task('useref', function() {
+//     return gulp.src('dist/index.html')
+//     .pipe(useref())
+//     .pipe(gulp.dest('dist'));
+// });
+
+gulp.task('concat', function() {
+    // src: ['<%=config.tmp.js%>/global.js',
+    //                 '<%=config.tmp.js%>/render.js',
+    //                 '<%=config.tmp.js%>/parser.js',
+    //                 '<%=config.tmp.js%>/game.js',
+    //                 '<%=config.tmp.js%>/socket.js',
+    //                 '<%=config.tmp.js%>/main.js'
+    //             ],
+    return gulp.src([`${config.dest.js}global.js`,
+        `${config.dest.js}render.js`,
+        `${config.dest.js}parser.js`,
+        `${config.dest.js}game.js`,
+        `${config.dest.js}socket.js`,
+        `${config.dest.js}main.js`])
+    .pipe(sourcemaps.init())
+    .pipe(concat('main.min.js'))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(config.dest.js))
+    .pipe(browserSync.reload({
+        stream: true
+    }));
+})
 
 gulp.task('imagemin', function() {
     return gulp.src(`${config.src.img}**/*.+(png|jpg|gif|svg)`)
@@ -108,7 +139,7 @@ gulp.task('replace', function() {
     };
     return gulp.src(`${config.dest.html}/index.html`)
         .pipe(replace(/@@version/g, pattern.version))
-        .pipe(replace(/@@baseUrl/g, pattern.baseUrl))
+        // .pipe(replace(/@@baseUrl/g, pattern.baseUrl))
         .pipe(replace(/@@socketServer/g, pattern.socketServer))
         .pipe(gulp.dest(config.dest.html))
         .pipe(browserSync.reload({
@@ -129,7 +160,7 @@ gulp.task('watch', ['browserSync'], function() {
         runSequence('sass', 'cssmin');
     });
     gulp.watch(`${config.src.js}**/*.js`, function() {
-        runSequence('babel', 'uglify');
+        runSequence('babel', 'uglify', 'concat');
     });
     gulp.watch(`${config.src.html}`, function() {
         runSequence('copy', 'replace');
@@ -138,7 +169,8 @@ gulp.task('watch', ['browserSync'], function() {
 
 
 gulp.task('dev', function() {
-    runSequence('clean', ['babel', 'sass', 'copy'], ['uglify', 'imagemin', 'cssmin'],
+    runSequence('clean', 'babel', 'sass', 'copy', ['uglify', 'imagemin', 'cssmin'],
+        'concat',
         'replace'
     );
 });

@@ -7,6 +7,7 @@ import { Socket } from './socket';
 // export const Main = {
 //     start() {
 // document.addEventListener('DOMContentLoaded', () => {
+//
 let chessImgs = {
     'a1': './images/a1.gif',
     'a2': './images/a2.gif',
